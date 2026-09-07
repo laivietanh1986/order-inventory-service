@@ -1,3 +1,13 @@
 spring:
   application:
     name: order-inventory-service
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: true
+        orm:
+          jdbc:
+            bind: TRACE
+
