@@ -3,6 +3,8 @@ spring:
     name: order-inventory-service
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
