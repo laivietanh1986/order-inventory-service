@@ -52,4 +52,16 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // tu query 1), nen khong kich hoat canh bao "applying in memory".
     @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.items WHERE o.id IN :ids")
     List<Order> findAllWithItemsByIdIn(@Param("ids") List<Long> ids);
+
+    // Cach 1 (muc 12) de lay danh sach: load ca entity roi tu map o tang Java
+    // se dung o test qua findAll()/findByCustomerName() da co san.
+    List<Order> findByCustomerName(String customerName);
+
+    // Aggregate query: DB tu tinh COUNT/SUM/MAX, tra ve DUY NHAT 1 dong bat ke
+    // khach hang co bao nhieu order - khong can nap ca danh sach roi
+    // stream().reduce() o tang Java.
+    @Query("SELECT new com.example.orderinventory.order.CustomerOrderSummaryDto(" +
+            "COUNT(o), SUM(o.totalAmount), MAX(o.totalAmount)) " +
+            "FROM Order o WHERE o.customerName = :customerName")
+    CustomerOrderSummaryDto findCustomerOrderSummary(@Param("customerName") String customerName);
 }

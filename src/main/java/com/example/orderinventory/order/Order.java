@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class Order {
 
     @Column(nullable = false)
     private String status;
+
+    @Column(name = "total_amount", nullable = false)
+    private BigDecimal totalAmount = BigDecimal.ZERO;
 
     // mappedBy = "order": day la INVERSE side, chi de doc, KHONG anh huong den
     // SQL sinh ra. FK order_id trong bang order_items hoan toan do OrderItem.order
