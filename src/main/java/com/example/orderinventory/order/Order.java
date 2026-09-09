@@ -39,6 +39,13 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
+    // Mot bag (List, khong @OrderColumn) khac - day chinh la nguyen lieu cho
+    // MultipleBagFetchException o muc 11 khi JOIN FETCH dong thoi voi items.
+    // Lich su trang thai la nhat ky (audit trail): chi PERSIST, khong REMOVE/
+    // orphanRemoval - khong ai duoc phep "xoa" mot dong lich su da ghi.
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    private List<OrderStatusHistory> statusHistory = new ArrayList<>();
+
     public Order(String customerName, String status) {
         this.customerName = customerName;
         this.status = status;
@@ -56,5 +63,10 @@ public class Order {
     public void removeItem(OrderItem item) {
         items.remove(item);
         item.setOrder(null);
+    }
+
+    public void addStatusHistory(OrderStatusHistory entry) {
+        statusHistory.add(entry);
+        entry.setOrder(this);
     }
 }
