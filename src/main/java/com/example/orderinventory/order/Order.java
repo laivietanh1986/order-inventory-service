@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,14 @@ public class Order {
 
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount = BigDecimal.ZERO;
+
+    // Cot moi cho muc 14 (composite index): dong vai tro range/sort column
+    // trong query WHERE ... AND created_at BETWEEN ? AND ? ORDER BY created_at
+    // DESC. Co gia tri mac dinh o tang Java giong totalAmount o muc 12, DB
+    // cung co DEFAULT CURRENT_TIMESTAMP (xem V12) de cac test insert bang raw
+    // JDBC tu truoc (khong biet cot nay) van chay binh thuong.
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt = Instant.now();
 
     // mappedBy = "order": day la INVERSE side, chi de doc, KHONG anh huong den
     // SQL sinh ra. FK order_id trong bang order_items hoan toan do OrderItem.order
