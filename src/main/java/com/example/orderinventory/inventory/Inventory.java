@@ -18,6 +18,14 @@ import lombok.Setter;
  * khai bao fetch nen mac dinh la EAGER (mac dinh cua @OneToOne), va o phia
  * owning nay, LAZY thuc su hoat dong duoc neu can (Hibernate biet chinh xac
  * FK nam trong bang cua no nen co the tao proxy ma khong can query truoc).
+ *
+ * CO CHU DICH khong co @Version: entity nay dung cho muc 17 (naive, tai hien
+ * lost update) va cac fix pessimistic/atomic/deadlock o muc 18-19 - nhung ky
+ * thuat do KHONG can @Version. Fix optimistic locking dung mot entity RIENG
+ * ({@link com.example.orderinventory.concurrency.OptimisticInventory}), vi
+ * neu them @Version vao day, Hibernate se TU DONG kiem tra version cho MOI
+ * lan save() - vo tinh "sua" luon ca ban naive o muc 17, lam sai y do minh
+ * hoa cua muc do.
  */
 @Entity
 @Table(name = "inventory")
