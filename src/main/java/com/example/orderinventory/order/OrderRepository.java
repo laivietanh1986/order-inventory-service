@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -64,4 +65,19 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "COUNT(o), SUM(o.totalAmount), MAX(o.totalAmount)) " +
             "FROM Order o WHERE o.customerName = :customerName")
     CustomerOrderSummaryDto findCustomerOrderSummary(@Param("customerName") String customerName);
+
+    // Muc 21: day dieu kien chuyen trang thai XUONG cau UPDATE thay vi
+    // check-then-act o tang Java ("if (order.getStatus() == fromStatus)").
+    // Affected rows = 1 nghia la CHINH lenh goi nay da thuc hien duoc buoc
+    // chuyen trang thai; affected rows = 0 nghia la trang thai KHONG con la
+    // fromStatus nua (da bi mot lenh goi khac doi truoc, hoac id khong ton
+    // tai) - khong bao gio co chuyen "doc thay CREATED roi ghi de" nhu kieu
+    // check-then-act.
+    @Modifying
+    @Query("update Order o set o.status = :toStatus where o.id = :id and o.status = :fromStatus")
+    int updateStatusIfCurrentlyIs(@Param("id") Long id, @Param("fromStatus") String fromStatus,
+            @Param("toStatus") String toStatus);
+
+    @Query("select o.status from Order o where o.id = :id")
+    String findStatusById(@Param("id") Long id);
 }
